@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from './config/configuration';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -13,8 +15,6 @@ import configuration from './config/configuration';
       inject: [ConfigService],
       async useFactory(service: ConfigService) {
         const config = service.get('database');
-
-        console.log(config);
 
         return {
           type: config.type,
@@ -28,8 +28,8 @@ import configuration from './config/configuration';
         };
       },
     }),
+    UserModule,
+    AuthModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
