@@ -37,4 +37,10 @@ export class UserService {
       relations: ['following', 'followers'],
     });
   }
+
+  async findOne(email: string) {
+    return await this.userRepo.findOneBy({
+      email,
+    });
+  }
 }
