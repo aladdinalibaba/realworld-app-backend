@@ -15,6 +15,7 @@
       {
         "endOfLine": "auto"
       }
-    ]
+    ],
+    "import/extensions": "off"
   }
 }
