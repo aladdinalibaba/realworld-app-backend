@@ -2,6 +2,7 @@ import express from 'express';
 import config from './config.js';
 import tryCatch from './util/try-catch.js';
 import userModule from './user/index.js';
+import authModule from './auth/index.js';
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.listen(config.port, () => {
 
 const appRouter = [
   ...userModule,
+  ...authModule,
   {
     path: '/ping',
     method: 'get',
@@ -25,9 +27,9 @@ appRouter.forEach(({ path, method, handler, middlewares = [] }) => {
 });
 
 app.use((err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
+  const status = err.statusCode || 500;
 
-  res.status(statusCode).json({
+  res.status(status).json({
     error: {
       message: err.message || 'Something went wrong',
     },

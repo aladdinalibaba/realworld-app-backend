@@ -6,4 +6,12 @@ async function getAll(req, res) {
   res.json({ data });
 }
 
-export default { getAll };
+async function create(req, res) {
+  const data = await userModel.create(req.body.data);
+
+  res.status(201).json({
+    data,
+  });
+}
+
+export default { create, getAll };

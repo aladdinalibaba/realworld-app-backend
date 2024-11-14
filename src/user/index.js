@@ -1,7 +1,11 @@
 import controller from './controller.js';
-import HttpException from '../util/exception.js';
 
 export default [
+  {
+    path: '/users',
+    method: 'post',
+    handler: controller.create,
+  },
   {
     path: '/users',
     method: 'get',
