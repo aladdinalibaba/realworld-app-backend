@@ -1,4 +1,5 @@
 import controller from './controller.js';
+import { authenticate } from '../auth/middleware.js';
 
 export default [
   {
@@ -9,6 +10,7 @@ export default [
   {
     path: '/users',
     method: 'get',
+    middlewares: [authenticate],
     handler: controller.getAll,
   },
 ];

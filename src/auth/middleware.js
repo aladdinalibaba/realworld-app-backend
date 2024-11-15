@@ -20,6 +20,14 @@ passport.use(
   ),
 );
 
-const localAuth = passport.authenticate('local', { session: false });
+const localAuth = passport.authenticate('local');
 
-export default { localAuth };
+function authenticate(req, res, next) {
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    next(new HttpException('You must sign in', 401));
+  }
+}
+
+export { localAuth, authenticate };
