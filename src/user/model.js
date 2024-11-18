@@ -2,17 +2,15 @@ import bcrypt from 'bcrypt';
 import prisma from '../prisma.js';
 import HttpException from '../util/exception.js';
 
-async function findAll() {
-  const data = await prisma.user.findMany();
-  return data;
+function findAll(options) {
+  return prisma.user.findMany(options);
 }
 
 async function findOne(options) {
-  const data = await prisma.user.findUnique(options);
-  return data;
+  return prisma.user.findUnique(options);
 }
 
-async function create({ email, password, ...rest }) {
+async function create({ email, password, username }) {
   const lowerEmail = email.toLowerCase();
 
   const existingUser = await prisma.user.findUnique({
@@ -27,7 +25,8 @@ async function create({ email, password, ...rest }) {
 
   const data = await prisma.user.create({
     data: {
-      ...rest,
+      username,
+      displayName: username,
       email: lowerEmail,
       password: hashed,
     },

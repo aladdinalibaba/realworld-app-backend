@@ -23,11 +23,11 @@ passport.use(
 const localAuth = passport.authenticate('local');
 
 function authenticate(req, res, next) {
-  if (req.isAuthenticated()) {
-    next();
-  } else {
-    next(new HttpException('You must sign in', 401));
+  if (!req.isAuthenticated()) {
+    throw new HttpException('You must sign in', 400);
   }
+
+  next();
 }
 
 export { localAuth, authenticate };

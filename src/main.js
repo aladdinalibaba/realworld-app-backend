@@ -1,14 +1,22 @@
 import express from 'express';
 import session from 'express-session';
+import cors from 'cors';
 import passport from './passport.js';
 import config from './config.js';
 import tryCatch from './util/try-catch.js';
 import userModule from './user/index.js';
 import authModule from './auth/index.js';
+import postModule from './post/index.js';
 
 const app = express();
 
 app.use(express.json());
+app.use(
+  cors({
+    origin: ['http://localhost:5173'],
+    credentials: true,
+  }),
+);
 app.use(
   session({
     name: config.session.name,
@@ -30,6 +38,7 @@ app.listen(config.port, () => {
 
 const appRouter = [
   ...userModule,
+  ...postModule,
   ...authModule,
   {
     path: '/ping',
