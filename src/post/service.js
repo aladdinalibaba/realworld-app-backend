@@ -1,13 +1,13 @@
 import prisma from '../prisma.js';
 import HttpException from '../util/exception.js';
 
-async function create(data, authorId) {
+async function create({ tags = [], ...rest }, authorId) {
   return prisma.post.create({
     data: {
-      ...data,
+      ...rest,
       authorId,
       tags: {
-        connectOrCreate: data.tags.map((tag) => ({
+        connectOrCreate: tags.map((tag) => ({
           where: { name: tag },
           create: { name: tag },
         })),

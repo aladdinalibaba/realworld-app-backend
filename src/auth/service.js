@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
-import userModel from '../user/model.js';
+import userService from '../user/service.js';
 
 async function verifyUser(email, password) {
-  const user = await userModel.findOne({
+  const user = await userService.findOne({
     where: { email },
   });
 

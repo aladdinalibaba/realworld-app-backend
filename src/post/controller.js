@@ -1,8 +1,8 @@
-import postModel from './model.js';
+import postService from './service.js';
 import getPagination from '../util/pagination.js';
 
 async function create(req, res) {
-  const data = await postModel.create(req.body.data, req.user);
+  const data = await postService.create(req.body, req.user);
 
   res.json({ data });
 }
@@ -12,7 +12,7 @@ async function findAll(req, res) {
 
   const page = getPagination(query);
 
-  const data = await postModel.findAll({
+  const data = await postService.findAll({
     include: {
       author: true,
     },
@@ -28,7 +28,7 @@ async function findAll(req, res) {
 async function addTags(req, res) {
   const { postId } = req.params;
 
-  const data = await postModel.addTags(req.user, +postId, req.body.data);
+  const data = await postService.addTags(req.user, +postId, req.body);
 
   res.json({ data });
 }
