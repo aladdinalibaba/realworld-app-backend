@@ -1,4 +1,4 @@
-function getPagination(query) {
+function getPagination(query: any) {
   const limit = parseInt(query.limit, 10);
   const offset = parseInt(query.offset, 10);
 

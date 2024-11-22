@@ -1,12 +1,14 @@
-import express from 'express';
-import session from 'express-session';
 import cors from 'cors';
-import passport from './passport.js';
-import config from './config.js';
-import tryCatch from './util/try-catch.js';
-import userModule from './user/index.js';
-import authModule from './auth/index.js';
-import postModule from './post/index.js';
+import session from 'express-session';
+import express from 'express';
+import config from './config';
+import passport from './passport';
+import tryCatch from './util/try-catch';
+import { Router } from './types';
+import { errorHandler } from './middleware';
+import userModule from './user';
+import authModule from './auth';
+import postModule from './post';
 
 const app = express();
 
@@ -20,7 +22,7 @@ app.use(
 app.use(
   session({
     name: config.session.name,
-    secret: config.session.secret,
+    secret: String(config.session.secret),
     saveUninitialized: false,
     resave: false,
     cookie: {
@@ -36,14 +38,16 @@ app.listen(config.port, () => {
   console.log(`Listening on localhost:${config.port}`);
 });
 
-const appRouter = [
+const appRouter: Router[] = [
   ...userModule,
   ...postModule,
   ...authModule,
   {
     path: '/ping',
     method: 'get',
-    handler: (req, res) => res.send('pong'),
+    handler: (req, res) => {
+      res.send('pong');
+    },
   },
 ];
 
@@ -51,13 +55,4 @@ appRouter.forEach(({ path, method, handler, middlewares = [] }) => {
   app[method](path, [...middlewares, handler].map(tryCatch));
 });
 
-app.use((err, req, res, next) => {
-  const status = err.statusCode || 500;
-
-  res.status(status).json({
-    errors: {
-      message: err.message || 'Something went wrong',
-      details: err.details,
-    },
-  });
-});
+app.use(errorHandler);
