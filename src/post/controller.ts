@@ -1,8 +1,8 @@
-import { Router } from '../types';
+import type { Router } from '../types/router';
 import postService from './service';
 import { authenticate } from '../auth/middleware';
-import { reqValidator } from '../middleware';
-import { addTagsSchema, createSchema } from './filter';
+import { parseIntPipe, reqValidator } from '../middleware';
+import { addTagsSchema, createSchema } from './validation';
 import User from '../user/entity';
 import getPagination from '../util/pagination';
 
@@ -34,10 +34,16 @@ export default [
     },
   },
   {
+    middlewares: [parseIntPipe('id')],
     path: '/posts/:id',
     method: 'get',
     handler: async (req, res) => {
+      const { id } = req.params;
+
       const data = await postService.findOne({
+        where: {
+          id: +id,
+        },
         relations: ['tags', 'author'],
       });
 
@@ -45,7 +51,11 @@ export default [
     },
   },
   {
-    middlewares: [authenticate, reqValidator(addTagsSchema)],
+    middlewares: [
+      authenticate,
+      reqValidator(addTagsSchema),
+      parseIntPipe('id'),
+    ],
     path: '/posts/:id/tag',
     method: 'post',
     handler: async (req, res) => {

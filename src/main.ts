@@ -4,7 +4,7 @@ import express from 'express';
 import config from './config';
 import passport from './passport';
 import tryCatch from './util/try-catch';
-import { Router } from './types';
+import type { Router } from './types/router';
 import { errorHandler } from './middleware';
 import userModule from './user';
 import authModule from './auth';

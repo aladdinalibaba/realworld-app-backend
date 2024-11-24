@@ -1,6 +1,6 @@
 import { reqValidator } from '../middleware';
-import { Router } from '../types';
-import { loginSchema } from './filter';
+import type { Router } from '../types/router';
+import { loginSchema } from './validation';
 import { localAuth } from './middleware';
 
 export default [

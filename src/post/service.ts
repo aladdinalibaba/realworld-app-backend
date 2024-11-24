@@ -1,4 +1,4 @@
-import { FindManyOptions } from 'typeorm';
+import { FindManyOptions, FindOneOptions } from 'typeorm';
 import HttpException from '../util/exception';
 import dataSource from '../data-source';
 import Post from './entity';
@@ -29,8 +29,8 @@ function find(options?: FindManyOptions<Post>) {
   return postRepo.find(options);
 }
 
-function findOne(options?: FindManyOptions<Post>) {
-  return postRepo.find(options);
+function findOne(options: FindOneOptions<Post>) {
+  return postRepo.findOne(options);
 }
 
 async function addTags(authorId: number, postId: number, tags: string[]) {

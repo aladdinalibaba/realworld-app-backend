@@ -1,6 +1,17 @@
-import { Schema } from 'joi';
+import Joi, { Schema } from 'joi';
 import { Handler, ErrorRequestHandler } from 'express';
 import HttpException from './util/exception';
+
+const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
+  const status = err.statusCode || 500;
+
+  res.status(status).json({
+    errors: {
+      message: err.message || 'Something went wrong',
+      details: err.details,
+    },
+  });
+};
 
 function reqValidator(
   schema: Schema,
@@ -25,15 +36,12 @@ function reqValidator(
   };
 }
 
-const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
-  const status = err.statusCode || 500;
+function parseIntPipe(key: string, min: number = -1) {
+  const schema = Joi.object({
+    [key]: Joi.number().integer().greater(min).required(),
+  }).unknown(true);
 
-  res.status(status).json({
-    errors: {
-      message: err.message || 'Something went wrong',
-      details: err.details,
-    },
-  });
-};
+  return reqValidator(schema, 'params');
+}
 
-export { errorHandler, reqValidator };
+export { errorHandler, reqValidator, parseIntPipe };

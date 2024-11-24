@@ -1,7 +1,9 @@
-import { reqValidator } from '../middleware';
-import { Router } from '../types';
-import { createSchema } from './filter';
+import { authenticate } from '../auth/middleware';
+import { reqValidator, parseIntPipe } from '../middleware';
+import type { Router } from '../types/router';
+import { createSchema } from './validation';
 import userService from './service';
+import User from './entity';
 
 export default [
   {
@@ -20,7 +22,37 @@ export default [
     path: '/users',
     method: 'get',
     handler: async (req, res) => {
-      res.send({ data: await userService.find() });
+      const data = await userService.find({
+        relations: ['posts', 'followers', 'following'],
+      });
+
+      res.send({ data });
+    },
+  },
+  {
+    middlewares: [authenticate, parseIntPipe('id')],
+    path: '/follow/:id',
+    method: 'post',
+    handler: async (req, res) => {
+      const { id } = req.user as Partial<User>;
+      const targetId = +req.params.id;
+
+      const data = await userService.follow(id!, targetId);
+
+      res.send({ data });
+    },
+  },
+  {
+    middlewares: [authenticate, parseIntPipe('id')],
+    path: '/follow/:id',
+    method: 'delete',
+    handler: async (req, res) => {
+      const { id } = req.user as Partial<User>;
+      const targetId = +req.params.id;
+
+      const data = await userService.unFollow(id!, targetId);
+
+      res.send({ data });
     },
   },
 ] as Router[];
